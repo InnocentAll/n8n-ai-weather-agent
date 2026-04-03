@@ -14,7 +14,7 @@ Ce projet a été réalisé dans le cadre de mon cursus en **Deep Learning** à 
 - **Window Buffer Memory** : Pour la gestion du contexte.
 
 ## Aperçu du Workflow
-![Capture d'écran de mon workflow](lien_vers_ta_capture.png)
+![Mon Workflow n8n](workflow-n8n.png)
 
 ## 📖 Comment l'utiliser ?
 1. Importer le fichier `workflow_meteo_agent.json` dans votre instance n8n.
