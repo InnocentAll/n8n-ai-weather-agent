@@ -1,0 +1,189 @@
+{
+  "name": "Veille IA Automatique",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e2dc8e21-4702-4acf-8020-afb0078676e0",
+      "name": "When chat message received",
+      "webhookId": "58cec5f8-6f31-4e55-980e-96e4e23b9ba9"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Tu es un agent expert. Pour toute demande de météo :\n\n    Détermine les coordonnées GPS de la ville par tes propres moyens.\n\n    Appelle l'outil HTTP_Request avec ces coordonnées.\n\n    Ne réponds à l'utilisateur QU'APRÈS avoir obtenu les données de l'outil.\n    INTERDICTION de demander les coordonnées à l'utilisateur."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        160,
+        16
+      ],
+      "id": "39cd9aad-cf49-42dc-a11e-a91efc805b80",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        32,
+        224
+      ],
+      "id": "35a52951-e126-4322-aaac-8e4f0186e4bf",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OphjTx5kkabwoQI4",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        224
+      ],
+      "id": "742ad849-2629-479b-8ce3-04be0aa0e10d",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Utilise cet outil pour obtenir la météo actuelle. Tu dois fournir la latitude et la longitude de l'endroit demandé par l'utilisateur.",
+        "url": "https://api.open-meteo.com/v1/forecast",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "longitude",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', ``, 'string') }}"
+            },
+            {
+              "name": "latitude",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', ``, 'string') }}"
+            },
+            {
+              "name": "current_weather",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        320,
+        224
+      ],
+      "id": "d96ffaea-9e82-49b1-9731-77136f9f2716",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "sendTo": "allamadjiinnocent@gmail.com",
+        "subject": "Rapport Météo Automatique",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        512,
+        32
+      ],
+      "id": "be183921-1e27-4078-a87f-3909898c72d8",
+      "name": "Send a message",
+      "webhookId": "6454c0ef-9d61-4bcc-93d4-fca3b9b50fe0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "uaq45MLHM3DpmXSS",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e4cf7106-61f6-4be8-9554-856077a821db",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "229e0abe0b6234f253dcb48360ce7e71825f5c0c302cbec5c3e7f2565495e517"
+  },
+  "id": "5C3UQ3XaDNCXCTUm",
+  "tags": []
+}
