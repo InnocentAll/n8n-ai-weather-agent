@@ -18,6 +18,9 @@ Ce projet a été réalisé dans le cadre de mon cursus en **Deep Learning** à 
 ## Aperçu du Workflow
 ![Mon Workflow n8n](workflow_meteo_agent.png)
 
+## Aperçu du Workflow avec Gmail
+![Mon Workflow n8n](workflow_meteo_agent_update.png)
+
 ## 📖 Comment l'utiliser ?
 1. Importer le fichier `workflow_meteo_agent.json` dans votre instance n8n.
 2. Configurer vos credentials pour Google Gemini et Gmail (OAuth2).
